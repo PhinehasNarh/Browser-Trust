@@ -1,0 +1,117 @@
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:00:57'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:01:06'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:01:08'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:08:48'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:08:50'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:08:51'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:09:57'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:09:58'
+- device_data:
+    cookie_enabled: true
+    ip_address: 127.0.0.1
+    languages:
+    - en-US
+    screen_height: 900
+    screen_width: 1440
+    timezone: Europe/London
+    trust_score: 60
+    user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/135.0.0.0 Safari/537.36
+    verdict: Trusted
+  timestamp: '2025-04-07 22:10:07'
