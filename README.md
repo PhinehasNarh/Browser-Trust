@@ -42,7 +42,7 @@ device_trust_checker/ │ ├── app.py # Flask app ├── trust_logic.py 
 ## 🧪 How to Run Locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/device-trust-checker.git
+git clone https://github.com/PhinehasNarh/device-trust-checker.git
 cd device-trust-checker
 pip install flask
 python app.py
