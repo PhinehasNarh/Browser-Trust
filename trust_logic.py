@@ -6,9 +6,9 @@ known_devices = {
 }
 
 trusted_ip_ranges = [
-    "127.0.0.1",     # local test
-    "192.168.",      # private range
-    "10.0."          # internal corp
+    "127.0.0.1",     
+    "192.168.",      
+    "10.0."          
 ]
 
 def is_trusted_ip(ip):
@@ -23,7 +23,6 @@ def is_outdated_browser(ua):
     return False
 
 def suspicious_screen_size(w, h):
-    # Common VM/bot resolution
     return (w <= 1024 and h <= 768)
 
 def calculate_trust_score(device_data):
@@ -35,7 +34,7 @@ def calculate_trust_score(device_data):
     w = int(device_data.get("screen_width", 0))
     h = int(device_data.get("screen_height", 0))
 
-    # Trust signals
+    
     if is_trusted_ip(ip):
         score += 30
 
@@ -45,7 +44,7 @@ def calculate_trust_score(device_data):
     if not is_outdated_browser(ua):
         score += 20
 
-    # Behavior-based scoring
+    
     if lang.startswith("en") and "Africa" in tz:
         score += 10
     else:
@@ -54,7 +53,7 @@ def calculate_trust_score(device_data):
     if suspicious_screen_size(w, h):
         score -= 20
 
-    # Final verdict
+    
     if score >= 60:
         verdict = "Trusted"
     elif score >= 30:
