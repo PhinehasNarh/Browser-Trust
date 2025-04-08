@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Collect basic device info
+    // Collect device info
     const deviceInfo = {
         user_agent: navigator.userAgent,
         screen_width: screen.width,
