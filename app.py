@@ -9,7 +9,7 @@ app = Flask(__name__)
 def show_alert_popup(data):
     def _popup():
         root = tk.Tk()
-        root.title("🚨 Suspicious Device Alert")
+        root.title("Suspicious Device Alert")
         root.geometry("400x200")
         root.configure(bg='black')
 
