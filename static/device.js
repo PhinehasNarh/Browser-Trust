@@ -24,7 +24,7 @@ function getCanvasFingerprint() {
 
         ctx.font = '11px Courier New, monospace';
         ctx.fillStyle = 'rgba(255,170,0,0.8)';
-        ctx.fillText('⚠ Never trust, always verify', 10, 44);
+        ctx.fillText('[!] Never trust, always verify', 10, 44);
 
         ctx.strokeStyle = '#00ff88';
         ctx.lineWidth = 0.8;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = '<p class="loading">Analysing device trust signals…</p>';
+    resultDiv.innerHTML = '<p class="loading">Analysing device trust signals...</p>';
 
     fetch('/submit-device-info', {
         method:  'POST',
