@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Trust - Zero Trust Device Assessment</title>
+    <script src="/static/device.js" defer></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0a0a0f;
+            --surface:   #0d0d1a;
+            --border:    #1a1a2e;
+            --text:      #d0d0e0;
+            --muted:     #666680;
+            --green:     #00ff88;
+            --yellow:    #ffaa00;
+            --red:       #ff4444;
+            --green-dim: rgba(0,255,136,.10);
+            --yellow-dim:rgba(255,170,0,.10);
+            --red-dim:   rgba(255,68,68,.10);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 48px 20px 60px;
+        }
+
+        /* ---- header ---- */
+        .header { text-align: center; margin-bottom: 40px; }
+
+        .chip {
+            display: inline-block;
+            border: 1px solid var(--green);
+            color: var(--green);
+            background: var(--green-dim);
+            font-size: .68rem;
+            letter-spacing: 3px;
+            padding: 3px 12px;
+            border-radius: 3px;
+            margin-bottom: 14px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--green);
+            letter-spacing: 3px;
+            text-shadow: 0 0 24px rgba(0,255,136,.35);
+        }
+
+        .header p {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: .82rem;
+            letter-spacing: 1px;
+        }
+
+        /* ---- result area ---- */
+        #result { width: 100%; max-width: 560px; }
+
+        /* loading */
+        .loading {
+            text-align: center;
+            padding: 48px 24px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--green);
+            font-size: .88rem;
+            letter-spacing: 1px;
+            animation: blink 1.4s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* result card */
+        .result-card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 32px 28px;
+            border: 1px solid var(--border);
+        }
+        .v-trusted    { border-color: var(--green); }
+        .v-neutral    { border-color: var(--yellow); }
+        .v-suspicious { border-color: var(--red); }
+
+        /* verdict label */
+        .verdict-label {
+            font-size: 1.55rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 5px;
+            margin-bottom: 26px;
+        }
+        .v-trusted    .verdict-label { color: var(--green);  background: var(--green-dim); }
+        .v-neutral    .verdict-label { color: var(--yellow); background: var(--yellow-dim); }
+        .v-suspicious .verdict-label { color: var(--red);    background: var(--red-dim); }
+
+        /* score */
+        .score-wrap { margin-bottom: 24px; }
+
+        .score-num {
+            font-size: 3.2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .v-trusted    .score-num { color: var(--green); }
+        .v-neutral    .score-num { color: var(--yellow); }
+        .v-suspicious .score-num { color: var(--red); }
+
+        .score-denom {
+            font-size: 1rem;
+            color: var(--muted);
+            vertical-align: bottom;
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+
+        .score-bar {
+            margin-top: 10px;
+            height: 7px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .score-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width .9s ease;
+        }
+        .fill-trusted    { background: var(--green); }
+        .fill-neutral    { background: var(--yellow); }
+        .fill-suspicious { background: var(--red); }
+
+        /* factor blocks */
+        .factor-block {
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,.025);
+            border-radius: 5px;
+        }
+        .factor-title {
+            font-size: .68rem;
+            letter-spacing: 3px;
+            color: var(--muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .factor-block ul { list-style: none; }
+        .pos-item  { color: #66ffaa; font-size: .82rem; padding: 3px 0; }
+        .risk-item { color: #ff7070; font-size: .82rem; padding: 3px 0; }
+
+        /* error */
+        .error-box {
+            color: var(--red);
+            text-align: center;
+            padding: 32px;
+            border: 1px solid var(--red);
+            border-radius: 8px;
+            background: var(--red-dim);
+            font-size: .85rem;
+        }
+
+        /* footer */
+        .footer {
+            margin-top: 44px;
+            text-align: center;
+            color: var(--muted);
+            font-size: .72rem;
+            letter-spacing: 1px;
+            line-height: 1.9;
+        }
+        .footer a { color: var(--green); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 28px 0;
+        }
+
+        /* scan animation overlay on card */
+        .result-card::before {
+            content: '';
+            display: block;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
+            margin-bottom: 0;
+            animation: scan 2.5s ease-in-out 1;
+            opacity: 0;
+        }
+        @keyframes scan {
+            0%   { opacity: 1; transform: scaleX(0); }
+            50%  { opacity: 1; transform: scaleX(1); }
+            100% { opacity: 0; transform: scaleX(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="chip">ZERO TRUST MODULE</div>
+        <h1>Browser Trust</h1>
+        <p>Real-time device fingerprint &amp; continuous trust assessment</p>
+    </div>
+
+    <div id="result">
+        <p class="loading">Collecting device signals&hellip;</p>
+    </div>
+
+    <hr class="divider" style="width:100%;max-width:560px;">
+
+    <div class="footer">
+        <p>Principle: <em>Never trust, always verify</em></p>
+        <p>
+            <a href="/dashboard">Admin Dashboard</a>
+            &nbsp;&bull;&nbsp;
+            <a href="https://github.com/PhinehasNarh/Browser-Trust" target="_blank" rel="noopener">GitHub</a>
+            &nbsp;&bull;&nbsp;
+            ATU Cybersecurity Research 2025
+        </p>
+    </div>
+
+</body>
+</html>

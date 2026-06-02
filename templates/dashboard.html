@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Trust - Admin Dashboard</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0a0a0f;
+            --surface:   #0d0d1a;
+            --surface2:  #111120;
+            --border:    #1a1a2e;
+            --text:      #d0d0e0;
+            --muted:     #555570;
+            --green:     #00ff88;
+            --yellow:    #ffaa00;
+            --red:       #ff4444;
+            --green-dim: rgba(0,255,136,.10);
+            --yellow-dim:rgba(255,170,0,.10);
+            --red-dim:   rgba(255,68,68,.10);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 28px 20px 60px;
+        }
+
+        /* ---- top bar ---- */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .topbar h1 {
+            color: var(--green);
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+        }
+
+        .topbar-actions { display: flex; gap: 12px; align-items: center; }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: .75rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: border-color .2s, color .2s;
+        }
+        .btn:hover { border-color: var(--green); color: var(--green); }
+
+        .btn-primary {
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .btn-primary:hover { background: var(--green-dim); }
+
+        /* ---- stat cards ---- */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 18px 16px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 2.1rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .stat-lbl {
+            font-size: .65rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        .c-total   .stat-val { color: var(--text); }
+        .c-trusted .stat-val { color: var(--green); }
+        .c-neutral .stat-val { color: var(--yellow); }
+        .c-susp    .stat-val { color: var(--red); }
+
+        /* risk rate bar */
+        .risk-bar-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .risk-bar-label { font-size: .72rem; color: var(--muted); letter-spacing: 2px; white-space: nowrap; }
+        .risk-bar { flex: 1; min-width: 120px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; display: flex; }
+        .rb-trusted  { background: var(--green);  transition: width .6s; }
+        .rb-neutral  { background: var(--yellow); transition: width .6s; }
+        .rb-susp     { background: var(--red);    transition: width .6s; }
+        .risk-bar-legend { display: flex; gap: 14px; font-size: .68rem; }
+        .leg { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* ---- table ---- */
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        .table-head-bar {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: .7rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-wrap { display: flex; gap: 8px; }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 3px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: .65rem;
+            letter-spacing: 1px;
+            transition: all .15s;
+        }
+        .filter-btn:hover, .filter-btn.active { border-color: var(--green); color: var(--green); }
+
+        .scroll-x { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .78rem;
+            min-width: 760px;
+        }
+
+        thead th {
+            background: var(--surface2);
+            padding: 10px 14px;
+            text-align: left;
+            color: var(--muted);
+            font-size: .65rem;
+            letter-spacing: 1px;
+            font-weight: normal;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background .15s;
+        }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: rgba(0,255,136,.025); }
+
+        td { padding: 9px 14px; vertical-align: middle; }
+
+        /* verdict chip */
+        .vchip {
+            padding: 2px 9px;
+            border-radius: 3px;
+            font-size: .65rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        .vchip-Trusted    { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green); }
+        .vchip-Neutral    { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+        .vchip-Suspicious { background: var(--red-dim);    color: var(--red);    border: 1px solid var(--red); }
+
+        /* score cell */
+        .score-td { font-weight: bold; }
+        .score-td.s-high { color: var(--green); }
+        .score-td.s-mid  { color: var(--yellow); }
+        .score-td.s-low  { color: var(--red); }
+
+        /* UA cell */
+        .ua-td {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--muted);
+            cursor: default;
+        }
+
+        /* risk tags */
+        .rtags { display: flex; flex-wrap: wrap; gap: 3px; }
+        .rtag {
+            background: var(--red-dim);
+            color: #ff8080;
+            border: 1px solid rgba(255,68,68,.25);
+            padding: 1px 6px;
+            border-radius: 2px;
+            font-size: .62rem;
+            white-space: nowrap;
+        }
+
+        /* empty state */
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+            font-size: .85rem;
+            line-height: 2;
+        }
+        .empty a { color: var(--green); text-decoration: none; }
+
+        /* responsive */
+        @media (max-width: 560px) {
+            .topbar h1 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- top bar -->
+    <div class="topbar">
+        <h1>&#9632; Admin Dashboard</h1>
+        <div class="topbar-actions">
+            <a href="/" class="btn">&#8592; Assessment</a>
+            <button class="btn btn-primary" onclick="location.reload()">&#8635; Refresh</button>
+        </div>
+    </div>
+
+    <!-- stat cards -->
+    <div class="stats">
+        <div class="stat-card c-total">
+            <div class="stat-val">{{ stats.total }}</div>
+            <div class="stat-lbl">Total Sessions</div>
+        </div>
+        <div class="stat-card c-trusted">
+            <div class="stat-val">{{ stats.trusted }}</div>
+            <div class="stat-lbl">Trusted</div>
+        </div>
+        <div class="stat-card c-neutral">
+            <div class="stat-val">{{ stats.neutral }}</div>
+            <div class="stat-lbl">Neutral</div>
+        </div>
+        <div class="stat-card c-susp">
+            <div class="stat-val">{{ stats.suspicious }}</div>
+            <div class="stat-lbl">Suspicious</div>
+        </div>
+    </div>
+
+    <!-- distribution bar -->
+    {% if stats.total > 0 %}
+    <div class="risk-bar-wrap">
+        <span class="risk-bar-label">Session Distribution</span>
+        <div class="risk-bar">
+            <div class="rb-trusted" style="width:{{ (stats.trusted / stats.total * 100)|round(1) }}%"></div>
+            <div class="rb-neutral" style="width:{{ (stats.neutral / stats.total * 100)|round(1) }}%"></div>
+            <div class="rb-susp"    style="width:{{ (stats.suspicious / stats.total * 100)|round(1) }}%"></div>
+        </div>
+        <div class="risk-bar-legend">
+            <span class="leg"><span class="dot" style="background:#00ff88"></span>Trusted</span>
+            <span class="leg"><span class="dot" style="background:#ffaa00"></span>Neutral</span>
+            <span class="leg"><span class="dot" style="background:#ff4444"></span>Suspicious</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- session table -->
+    <div class="table-wrap">
+        <div class="table-head-bar">
+            <span>Recent Sessions (last 100)</span>
+            <div class="filter-wrap">
+                <button class="filter-btn active" onclick="filterRows('all',  this)">All</button>
+                <button class="filter-btn"        onclick="filterRows('Trusted',    this)">Trusted</button>
+                <button class="filter-btn"        onclick="filterRows('Neutral',    this)">Neutral</button>
+                <button class="filter-btn"        onclick="filterRows('Suspicious', this)">Suspicious</button>
+            </div>
+        </div>
+
+        {% if logs %}
+        <div class="scroll-x">
+            <table id="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>IP Address</th>
+                        <th>Score</th>
+                        <th>Verdict</th>
+                        <th>Screen</th>
+                        <th>Platform</th>
+                        <th>Timezone</th>
+                        <th>Risk Factors</th>
+                        <th>User Agent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for log in logs %}
+                    {% set v = log.get('verdict', '') %}
+                    {% set s = log.get('trust_score', 0) %}
+                    <tr data-verdict="{{ v }}">
+                        <td>{{ log.get('timestamp', 'N/A') }}</td>
+                        <td>{{ log.get('ip_address', 'N/A') }}</td>
+                        <td class="score-td
+                            {% if s is number and s >= 60 %}s-high
+                            {% elif s is number and s >= 30 %}s-mid
+                            {% else %}s-low{% endif %}">
+                            {{ s }}
+                        </td>
+                        <td><span class="vchip vchip-{{ v }}">{{ v }}</span></td>
+                        <td>{{ log.get('screen', 'N/A') }}</td>
+                        <td>{{ log.get('platform', '') or 'N/A' }}</td>
+                        <td>{{ log.get('timezone', 'N/A') }}</td>
+                        <td>
+                            <div class="rtags">
+                            {% for r in (log.get('risk_factors') or []) %}
+                                <span class="rtag" title="{{ r }}">{{ r[:28] }}</span>
+                            {% endfor %}
+                            </div>
+                        </td>
+                        <td class="ua-td" title="{{ log.get('user_agent', '') }}">
+                            {{ log.get('user_agent', 'N/A') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">
+            <p>No sessions recorded yet.</p>
+            <p>Visit the <a href="/">assessment page</a> to generate data.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function filterRows(verdict, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('#sessions-table tbody tr').forEach(row => {
+                row.style.display =
+                    (verdict === 'all' || row.dataset.verdict === verdict)
+                    ? '' : 'none';
+            });
+        }
+    </script>
+
+</body>
+</html>
